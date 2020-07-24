@@ -4,6 +4,8 @@ import Form from './Form'
 import axios from 'axios'
 import * as yup from 'yup'
 import './App.css'
+import Image from './Pizza.jpg'
+
 
 
 const initialFormValues = {
@@ -27,61 +29,105 @@ const App = () => {
 
     const [orders, setOrders] = useState(initialOrders)
 
-    const createOrder = (name, value) => {
+    const createOrder = event => {
 
-        const newOrder = { ...formValues, [name]: value }
+        const newOrder = { ...formValues, [event.target.name]: event.target.value }
         setFormValues(newOrder)
-        inputChange(name, value)
+        
     }
 
-  const inputChange = (name, value) => {
+    const handleChange = event => {
+      
+      if (event.target.type === 'checkbox') {
+      setFormValues({ ...formValues, [event.target.name]: event.target.checked });
+      } else {
+      setFormValues({ ...formValues, [event.target.name]: event.target.value });
+      }
+      inputChange(event)
+      
+      
+    };
 
-    yup
-    .reach(formSchema, 'name')
-    
-    .validate(value)
-   
-    .then(valid => {
-      setErrors({
-        ...errors,
-        [name]: ""
-      });
-    })
-   
-    .catch(err => {
-      setErrors({
-        ...errors,
-        [name]: err.errors 
-      });
+    const formSchema = yup.object().shape({
+      name: yup
+      .string()
+      .min(2, "Name must be at least 2 characters long")
+      .required("Name is required"),
+
     });
 
-      setFormValues({
-        ...formValues,
-        [name]: value
+
+    const [errors, setErrors] = useState({
+      name: "",
+      pizzasize: "",
+      hamburger: "",
+      greenpeppers: "",
+      chicken: "",
+      mushrooms: "",
+      instructions: ""
+    });
+
+
+    const inputChange = e => {
+
+      e.persist();
+
+      yup
+      .reach(formSchema, 'name')
+      
+      .validate(e.target.value)
+     
+      .then(valid => {
+        setErrors({
+          ...errors,
+          [e.target.name]: ""
+        });
+      })
+     
+      .catch(err => {
+        setErrors({
+          ...errors,
+          [e.target.name]: err.errors
+        });
       });
+  
+        setFormValues({
+          ...formValues,
+          [e.target.name]: e.target.value
+        });
+  
+  
+    }  
+  // const inputChange = (name, value) => {
+
+  //   yup
+  //   .reach(formSchema, 'name')
+    
+  //   .validate(value)
+   
+  //   .then(valid => {
+  //     setErrors({
+  //       ...errors,
+  //       [name]: ""
+  //     });
+  //   })
+   
+  //   .catch(err => {
+  //     setErrors({
+  //       ...errors,
+  //       [name]: err.errors
+  //     });
+  //   });
+
+  //     setFormValues({
+  //       ...formValues,
+  //       [name]: value
+  //     });
 
 
-  }
+  // }
 
-  const [errors, setErrors] = useState({
-    name: "",
-    pizzasize: "",
-    hamburger: "",
-    greenpeppers: "",
-    chicken: "",
-    mushrooms: "",
-    instructions: ""
-  });
-
-
-
-  const formSchema = yup.object().shape({
-    name: yup
-    .string()
-    .min(2, "Name must be at least 2 characters long")
-    .required("Name is required"),
-
-  });
+    
   
 
 
@@ -97,7 +143,7 @@ const App = () => {
       setButtonDisabled(!valid);
       console.log(valid)
     });
-  }, [formValues]);
+  }, [formValues, formSchema]);
   
     
   
@@ -114,7 +160,7 @@ const App = () => {
     }
   
   
-    axios.post('https://reqres.in/', newOrder)
+    axios.post('https://reqres.in/api/unknown', newOrder)
   
         .then(res => {
       
@@ -123,7 +169,7 @@ const App = () => {
           setFormValues(initialFormValues)
           console.log(res.data)
         })
-  
+   
         .catch(err => {
   
         })
@@ -141,8 +187,11 @@ const App = () => {
       <h1>Lambda Eats</h1>
       <Link to={'/'}><button>Home</button></Link>
       <Link to={'/pizza'}><button>Pizza?</button></Link>
+      <br></br><br></br>
 
       <Route exact path='/'>
+
+        <img className="image" src={Image}></img>
 
       </Route>
 
@@ -152,22 +201,24 @@ const App = () => {
           formValues={formValues} 
           update={createOrder}
           submit={submitForm}
-          isButtonDisabled={isButtonDisabled} />
+          isButtonDisabled={isButtonDisabled}
+          handleChange={handleChange} />
 
         <div className='errors'>
           <div className='name'>{errors.name}</div>
         </div> 
 
        {orders.map( order => {
+         console.log(order)
           return (
-            <div>
+            <div><br></br>
             <p>{order.name}</p>
-            <p>{order.pizzasize.e.target.value}</p>
-            <p>{order.hamburger.e.target.value}</p>
-            <p>{order.greenpeppers.checked}</p>
-            <p>{order.chicken.checked}</p>
-            <p>{order.mushrooms.checked}</p>
-            <p>{order.instructions}</p>
+            <p>Size: {order.pizzasize}</p>
+            <p>{order.hamburger ? <b>Hamburger Included</b> : <b>'None'</b>}</p>
+            <p>{order.greenpeppers ? <b>Green Peppers Included</b> : <b>'None'</b>}</p>
+            <p>{order.chicken ? <b>Chicken Included</b> : <b>'None'</b>}</p>
+            <p>{order.mushrooms ? <b>Mushrooms Included</b> : <b>'None'</b>}</p>
+            <p>{order.instructions}</p><br></br>
             </div>
           )
        })} 

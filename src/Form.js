@@ -2,22 +2,24 @@ import React from 'react'
 
 function Form (props) {
 
-    const { formValues, update, isButtonDisabled, submit } = props
+    const { formValues, update, isButtonDisabled, submit, handleChange } = props
 
 
 
-    const handleChange = evt => {
+    // const handleChange = evt => {
      
-        if (evt.target.type === 'checkbox') {
-            const { name, checked} = evt.target
-            update(name, checked) 
-        } else {
-            const { name, value } = evt.target
-            update(name, value)
-        }
+    //     if (evt.target.type === 'checkbox') {
+    //         const { name, checked } = evt.target
+    //         update(name, checked)  
+    //     } else {
+    //         const { name, value } = evt.target
+    //         update(name, value)
+    //     }
 
-        console.log(evt.target.value)
-    }
+    //     console.log(evt.target.value) 
+    // }
+
+   
 
     
 
@@ -45,13 +47,13 @@ function Form (props) {
                 onChange={handleChange}
             />
             <br></br>
-            <label htmlFor='pizza-size'>Pizza Size:</label>
+            <label htmlFor='pizzasize'>Pizza Size:</label>
                 <select 
-                    id='pizza-size' 
-                    name='pizza-size'
-                    value={formValues.pizzasize}
+                    id='pizzasize' 
+                    name='pizzasize'
+                   
                     onChange={handleChange}>
-                        <option disabled value=''>Select pizza size</option>
+                        <option value=''>Select pizza size</option>
                         <option value='small'>Small</option>
                         <option value='medium'>Medium</option>
                         <option value='large'>Large</option>   
@@ -91,7 +93,7 @@ function Form (props) {
                     onChange={handleChange}
                     type='textarea' />
                 <br></br><br></br>
-                <input type="submit" value="Submit" disabled={isButtonDisabled} />
+                <button type="submit" value="Submit" disabled={isButtonDisabled}>Add to Order</button>
                 
 
 

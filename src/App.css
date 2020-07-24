@@ -1,11 +1,15 @@
 .App {
-  text-align: center;
+  text-align: center; 
   width: 70%;
-  background-color: #ffde70;
+  background-color: yellow;
   margin: 0 auto;
 }
 
 h1 {
   font-size: 2rem;
+}
+
+.image {
+  width: 100%;
 }
 
