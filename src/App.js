@@ -38,12 +38,13 @@ const App = () => {
 
     const handleChange = event => {
       
+      inputChange(event)
       if (event.target.type === 'checkbox') {
       setFormValues({ ...formValues, [event.target.name]: event.target.checked });
       } else {
       setFormValues({ ...formValues, [event.target.name]: event.target.value });
       }
-      inputChange(event)
+      
       
       
     };
